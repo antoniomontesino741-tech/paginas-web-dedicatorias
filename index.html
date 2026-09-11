@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda de Plantillas & Animaciones Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0B0F17;
+      --bg-card: #151C28;
+      --accent-gold: #E2B857;
+      --accent-gold-glow: rgba(226, 184, 87, 0.3);
+      --text-light: #F1F5F9;
+      --text-muted: #94A3B8;
+      --whatsapp-green: #25D366;
+      --border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-light);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      background: radial-gradient(circle at top, #1E293B 0%, var(--bg-main) 70%);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+
+    header h1 span {
+      color: var(--accent-gold);
+      text-shadow: 0 0 20px var(--accent-gold-glow);
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 0 20px;
+    }
+
+    .grid-galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 15px var(--accent-gold-glow);
+      border-color: rgba(226, 184, 87, 0.4);
+    }
+
+    .card-preview {
+      width: 100%;
+      height: 200px;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-preview iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+      transform: scale(0.95);
+    }
+
+    .card-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-light);
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    .card-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .price-tag {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .price-currency {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-preview {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-preview:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-buy {
+      background: var(--whatsapp-green);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-buy:hover {
+      background: #20ba5a;
+      transform: scale(1.02);
+    }
+
+    /* MODAL DE PREVISUALIZACIÓN */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      width: 90%;
+      max-width: 900px;
+      height: 80vh;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border: 1px solid var(--border-color);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover { background: #FF3333; }
+
+    .modal iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Galería de <span>Animaciones & Plantillas Web</span></h1>
+    <p>Explora nuestros diseños interactivos exclusivos. Cada archivo tiene un valor único de <strong>$10 USD</strong> y lo recibes directamente en tu WhatsApp listo para usar.</p>
+  </header>
+
+  <div class="container">
+    <div class="grid-galeria">
+
+      <!-- PROYECTO 1 -->
+      <div class="card">
+        <div class="card-preview">
+          <iframe src="cartitassssss.html"></iframe>
+        </div>
+        <div class="card-content">
+          <div class="card-title">Carta Broma & Mini Dino Game</div>
+          <div class="card-desc">Juego retro interactivo que simula una alerta de sistema antes de revelar un mensaje romántico inolvidable.</div>
+          <div class="card-price-row">
+            <div class="price-tag">$10 <span class="price-currency">USD</span></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-preview" onclick="abrirModal('cartitassssss.html')">Ver Demo</button>
+            <a class="btn btn-buy" href="https://wa.me/50588216833?text=Hola!%20Me%20interesa%20comprar%20el%20archivo%20'Carta%20Broma%20%26%20Mini%20Dino%20Game'%20por%20$10%20USD." target="_blank">Pedir 📲</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROYECTO 2 -->
+      <div class="card">
+        <div class="card-preview">
+          <iframe src="promo-animaciones.html"></iframe>
+        </div>
+        <div class="card-content">
+          <div class="card-title">Landing de Animaciones Personalizadas</div>
+          <div class="card-desc">Página moderna estilo agencia para ofrecer detalles interactivos, invitaciones y mensajes especiales.</div>
+          <div class="card-price-row">
+            <div class="price-tag">$10 <span class="price-currency">USD</span></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-preview" onclick="abrirModal('promo-animaciones.html')">Ver Demo</button>
+            <a class="btn btn-buy" href="https://wa.me/50588216833?text=Hola!%20Me%20interesa%20comprar%20el%20archivo%20'Landing%20de%20Animaciones%20Personalizadas'%20por%20$10%20USD." target="_blank">Pedir 📲</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROYECTO 3 -->
+      <div class="card">
+        <div class="card-preview">
+          <iframe src="index (2).html"></iframe>
+        </div>
+        <div class="card-content">
+          <div class="card-title">Flor Amarilla Poética Interactiva</div>
+          <div class="card-desc">Animación elegante de una flor floreciendo paso a paso con frases poéticas flotantes y estilo neón.</div>
+          <div class="card-price-row">
+            <div class="price-tag">$10 <span class="price-currency">USD</span></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-preview" onclick="abrirModal('index (2).html')">Ver Demo</button>
+            <a class="btn btn-buy" href="https://wa.me/50588216833?text=Hola!%20Me%20interesa%20comprar%20el%20archivo%20'Flor%20Amarilla%20Poetica'%20por%20$10%20USD." target="_blank">Pedir 📲</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROYECTO 4 -->
+      <div class="card">
+        <div class="card-preview">
+          <iframe src="index (3).html"></iframe>
+        </div>
+        <div class="card-content">
+          <div class="card-title">Flor Amarilla V2 Digital</div>
+          <div class="card-desc">Experiencia visual fluida con destellos neón, frases dedicatorias dinámicas y bloque de código personalizado.</div>
+          <div class="card-price-row">
+            <div class="price-tag">$10 <span class="price-currency">USD</span></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-preview" onclick="abrirModal('index (3).html')">Ver Demo</button>
+            <a class="btn btn-buy" href="https://wa.me/50588216833?text=Hola!%20Me%20interesa%20comprar%20el%20archivo%20'Flor%20Amarilla%20V2'%20por%20$10%20USD." target="_blank">Pedir 📲</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE PREVISUALIZACIÓN FULL -->
+  <div class="modal" id="modalPreview">
+    <div class="modal-content">
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+      <iframe id="iframeModal" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    function abrirModal(archivo) {
+      const modal = document.getElementById('modalPreview');
+      const iframe = document.getElementById('iframeModal');
+      iframe.src = archivo;
+      modal.style.display = 'flex';
+    }
+
+    function cerrarModal() {
+      const modal = document.getElementById('modalPreview');
+      const iframe = document.getElementById('iframeModal');
+      iframe.src = '';
+      modal.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
