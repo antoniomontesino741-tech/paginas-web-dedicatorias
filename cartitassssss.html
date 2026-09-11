@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚠️ WARNING: SYSTEM_INTRUSION</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #05070B;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #E2E8F0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* EFECTO DE GLITCH Y SACUDIDA */
+    @keyframes glitch-shake {
+      0% { transform: translate(0, 0) skew(0deg); }
+      20% { transform: translate(-3px, 2px) skew(-1deg); }
+      40% { transform: translate(3px, -1px) skew(2deg); background-color: rgba(255, 0, 0, 0.05); }
+      60% { transform: translate(-2px, -2px) skew(0deg); }
+      80% { transform: translate(2px, 2px) skew(-1deg); }
+      100% { transform: translate(0, 0) skew(0deg); }
+    }
+    .pantalla-danada {
+      animation: glitch-shake 0.15s infinite;
+      border: 2px solid #FF0000 !important;
+      box-shadow: 0 0 50px rgba(255, 0, 0, 0.5) !important;
+    }
+
+    /* MINI VENTANAS DE ADVERTENCIA FALSAS */
+    .pop-up-error {
+      position: absolute;
+      background: #1A0505;
+      border: 2px solid #FF3333;
+      color: #FF8888;
+      font-family: monospace;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
+      z-index: 100;
+      width: 180px;
+      pointer-events: none; /* Para que no estorben al hacer clic */
+      font-size: 11px;
+    }
+    .pop-up-header {
+      background: #FF3333;
+      color: #000;
+      font-weight: bold;
+      padding: 2px 5px;
+      margin-bottom: 5px;
+      font-size: 10px;
+    }
+
+    /* FASE 1: DINO GAME */
+    #contenedorJuego {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #11141A;
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid #2A2F3A;
+      width: 90%;
+      max-width: 500px;
+      z-index: 10;
+    }
+    #gameCanvas { background: #EFEFEF; border-radius: 8px; display: block; }
+
+    /* FASE 2: BARRA DE HACKEO */
+    #faseHack {
+      display: none;
+      width: 95%;
+      max-width: 450px;
+      background: #000;
+      border: 1px solid #00FF00;
+      padding: 25px;
+      font-family: monospace;
+      color: #00FF00;
+      border-radius: 8px;
+      z-index: 10;
+    }
+    .progress-bar-container {
+      width: 100%; background: #111; border: 1px solid #00FF00; height: 25px; margin-top: 15px; overflow: hidden;
+    }
+    .progress-bar-fill { height: 100%; background: #00FF00; width: 0%; }
+    .log-text { height: 110px; overflow: hidden; margin-top: 15px; font-size: 11px; line-height: 1.5; }
+    .text-rojo { color: #FF3333; font-weight: bold; }
+
+    /* FASE 3: LA CARTA LIMPIA */
+    #faseCarta {
+      display: none;
+      background: #0D111A;
+      width: 90%;
+      max-width: 450px;
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+      flex-direction: column;
+      gap: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .content-wrapper { position: relative; width: 100%; height: 180px; display: flex; }
+    .message-container { width: 55%; height: 100%; font-size: 13px; line-height: 1.5; white-space: pre-line; z-index: 2; }
+    .space-container { position: absolute; left: 100%; transform: translateX(-100%); width: 140px; height: 180px; border-radius: 16px; overflow: hidden; z-index: 1; }
+    .timer-container { border-top: 1px solid #1E293B; padding-top: 15px; font-size: 13px; text-align: center;}
+    .timer-label { color: #F59E0B; }
+    .timer-digits { font-weight: 600; color: #FFF; margin-top: 4px;}
+
+    .btn-final-amor {
+      background: #38BDF8;
+      color: #05070B;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+    }
+    .btn-final-amor:hover { background: #7DD3FC; }
+  </style>
+</head>
+<body>
+
+  <!-- FASE 1: DINO GAME -->
+  <div id="contenedorJuego">
+    <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:10px; font-family:monospace; color:#888;">
+      <span>🌐 NETWORK_ERROR</span>
+      <span>SCORE: <span id="scoreVal">0</span></span>
+    </div>
+    <canvas id="gameCanvas" width="460" height="160"></canvas>
+    <div style="margin-top:15px; font-size:13px; color:#A0AEC0; text-align:center;">Presiona **ESPACIO** o **TOCA** para saltar.</div>
+  </div>
+
+  <!-- FASE 2: HACKEO FALSO -->
+  <div id="faseHack">
+    <div id="statusCritico" class="text-rojo">[CRITICAL INTRUSION] ROOT_ACCESS</div>
+    <div style="margin-top: 5px; font-size: 12px;" id="subtituloHack">Iniciando volcado completo de memoria...</div>
+    <div class="progress-bar-container">
+      <div id="progressFill" class="progress-bar-fill"></div>
+    </div>
+    <div style="text-align: right; font-size: 12px; margin-top: 4px;" id="progresoTxt">0%</div>
+    <div class="log-text" id="logText"></div>
+  </div>
+
+  <!-- FASE 3: LA CARTA FINAL SIN TARJETA -->
+  <div id="faseCarta">
+    <div class="content-wrapper">
+      <div class="message-container"><p id="typewriter"></p></div>
+      <div class="space-container"><canvas id="spaceCanvas" width="140" height="180"></canvas></div>
+    </div>
+    
+    <div class="timer-container">
+      <span class="timer-label">Orbitando a tu alrededor desde hace...</span>
+      <div id="timer" class="timer-digits">Cargando...</div>
+    </div>
+
+    <!-- Botón directo de la broma y pregunta final -->
+    <button class="btn-final-amor" onclick="preguntaFinal()">⚠️ ¡MULTA DE $100 EXIGIDA! Resolver Aquí ❤️</button>
+  </div>
+
+  <script>
+    const fechaInicio = new Date(2025, 6, 21, 0, 0, 0); 
+    const text = `Para mi mundo entero:\n\nCoincidir en este pequeño planeta azul fue mi mayor fortuna.\nEres mi gravedad y mi lugar seguro en el universo.`;
+
+    // --- LÓGICA DINO ---
+    const gCanvas = document.getElementById('gameCanvas'); const gCtx = gCanvas.getContext('2d');
+    let dino = { x: 30, y: 130, wy: 20, h: 25, vy: 0, saltando: false };
+    let cactus = { x: 500, y: 135, wy: 15, h: 20, speed: 5 };
+    let score = 0; let juegoActivo = true;
+
+    function saltar() { if (!dino.saltando && juegoActivo) { dino.vy = -8.5; dino.saltando = true; } }
+    window.addEventListener('keydown', (e) => { if(e.code === 'Space') saltar(); });
+    gCanvas.addEventListener('mousedown', saltar); gCanvas.addEventListener('touchstart', saltar);
+
+    function updateGame() {
+      if (!juegoActivo) return;
+      gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+      gCtx.strokeStyle = '#555'; gCtx.beginPath(); gCtx.moveTo(0, 155); gCtx.lineTo(460, 155); gCtx.stroke();
+      
+      dino.y += dino.vy; dino.vy += 0.5;
+      if (dino.y >= 130) { dino.y = 130; dino.saltando = false; }
+      cactus.x -= cactus.speed;
+      if (cactus.x < -20) { cactus.x = 500 + Math.random()*100; score += 10; document.getElementById('scoreVal').innerText = score; }
+
+      if (cactus.x < dino.x + dino.wy && cactus.x + cactus.wy > dino.x && dino.y + dino.h > cactus.y) {
+        juegoActivo = false;
+        setTimeout(activarHackeoTerror, 400);
+      }
+      gCtx.fillStyle = '#555'; gCtx.fillRect(dino.x, dino.y, dino.wy, dino.h);
+      gCtx.fillStyle = '#222'; gCtx.fillRect(cactus.x, cactus.y, cactus.wy, cactus.h);
+      requestAnimationFrame(updateGame);
+    }
+    requestAnimationFrame(updateGame);
+
+    // --- POP-UPS DE ADVERTENCIA FALSOS ---
+    function crearPopUpError() {
+      const msjs = ["FATAL_ERROR", "MEMORIE_LEAK", "OVERHEATING 98°C", "ACCESS_DENIED", "CORE_DUMPED", "WIPING_DATA...", "PORT_ATTACK"];
+      const pop = document.createElement('div');
+      pop.className = 'pop-up-error';
+      
+      // Ubicación aleatoria en la pantalla
+      pop.style.left = Math.random() * (window.innerWidth - 180) + 'px';
+      pop.style.top = Math.random() * (window.innerHeight - 80) + 'px';
+      
+      pop.innerHTML = `
+        <div class="pop-up-header">⚠️ WARNING</div>
+        <div>${msjs[Math.floor(Math.random() * msjs.length)]}<br>0x000FF${Math.floor(Math.random()*900)}</div>
+      `;
+      document.body.appendChild(pop);
+    }
+
+    // --- FASE 2: BARRA DE HACKEO E INVASIÓN ---
+    function activarHackeoTerror() {
+      document.getElementById('contenedorJuego').style.display = 'none';
+      const cajaHack = document.getElementById('faseHack');
+      cajaHack.style.display = 'block';
+
+      let progreso = 0;
+      const fill = document.getElementById('progressFill');
+      const txt = document.getElementById('progresoTxt');
+      const log = document.getElementById('logText');
+      
+      const logs = [
+        "Connecting malware gateway...", "Extracting partitions...", "ERROR: Device unsecured",
+        "Downloading cache files...", "Dumping photo gallery...", "CRITICAL: Hard drive fail",
+        "Wiping local databases...", "Sending package to cloud...", "Corrupting pixel matrix..."
+      ];
+
+      const intervalo = setInterval(() => {
+        progreso += 1;
+        fill.style.width = progreso + '%';
+        txt.innerText = progreso + '%';
+
+        if (progreso % 10 === 0 && logs.length > 0) {
+          log.innerHTML += `> ${logs.shift()}<br>`;
+        }
+
+        // Empiezan a salir pop-ups gradualmente a partir del 30%
+        if (progreso > 30 && progreso % 3 === 0) {
+          crearPopUpError();
+        }
+
+        if (progreso === 45) {
+          cajaHack.classList.add('pantalla-danada');
+          document.getElementById('statusCritico').innerText = "[🔥 FIREWALL DOWNTIME]";
+        }
+        
+        if (progreso === 75) {
+          document.body.style.backgroundColor = '#200';
+          document.getElementById('subtituloHack').innerHTML = "<span class='text-rojo'>💥 HARDWARE COMPROMISED - FATAL CRASH</span>";
+        }
+
+        if (progreso >= 100) {
+          clearInterval(intervalo);
+          // Destello blanco
+          document.body.style.backgroundColor = '#FFF'; 
+          setTimeout(mostrarCartaFinal, 300);
+        }
+      }, 140); // Duración extendida para meter presión
+    }
+
+    // --- FASE 3: DETONACIÓN ROMÁNTICA ---
+    function mostrarCartaFinal() {
+      // Remover todos los pop-ups de error viejos
+      document.querySelectorAll('.pop-up-error').forEach(p => p.remove());
+      
+      document.body.style.backgroundColor = '#05070B';
+      document.getElementById('faseHack').style.display = 'none';
+      
+      const carta = document.getElementById('faseCarta');
+      carta.style.display = 'flex';
+      setTimeout(() => { carta.style.opacity = '1'; }, 50);
+
+      initSpaceCanvas();
+      typeWriter();
+      actualizarContador();
+      setInterval(actualizarContador, 1000);
+    }
+
+    function initSpaceCanvas() {
+      const canvas = document.getElementById('spaceCanvas'); const ctx = canvas.getContext('2d');
+      const earthBg = new Image(); earthBg.src = 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=400&q=80';
+      earthBg.onload = function() {
+        function dibujar() {
+          ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(earthBg,0,0,canvas.width,canvas.height);
+          let grad = ctx.createLinearGradient(0,canvas.height*0.3,0,canvas.height*0.6);
+          grad.addColorStop(0,'rgba(245,158,11,0.3)'); grad.addColorStop(0.3,'rgba(14,165,233,0.15)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.fillStyle = grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+          requestAnimationFrame(dibujar);
+        }
+        dibujar();
+      };
+    }
+
+    let charIndex = 0;
+    function typeWriter() {
+      if (charIndex < text.length) { document.getElementById("typewriter").innerHTML += text.charAt(charIndex); charIndex++; setTimeout(typeWriter, 40); }
+    }
+
+    function actualizarContador() {
+      const ahora = new Date(); const diferencia = ahora - fechaInicio;
+      const segundos = Math.floor((diferencia / 1000) % 60); const minutos = Math.floor((diferencia / (1000 * 60)) % 60);
+      const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24); const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      document.getElementById("timer").innerText = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+    }
+
+    function preguntaFinal() {
+      alert("💸 ¡Broma! El sistema está 100% a salvo y no me debés nada... excepto una respuesta. Jajaja");
+      let respuesta = confirm("Ahora sí, sin alarmas de por medio... ¿Aceptás ser mi dua oficial? 🎮✨");
+      if (respuesta) { 
+        alert("¡VAMOOOS! Contrato cerrado. Nos vemos en el lobby. 🚀❤️"); 
+      } else { 
+        alert("Error 404: Botón de 'No' dañado por el virus. Vas a tener que decir que sí. 😜"); 
+      }
+    }
+  </script>
+</body>
+</html>

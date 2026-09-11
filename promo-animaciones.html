@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartas que se mueven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#1c1420;
+    --bg-1:#241a2c;
+    --bg-2:#2c2036;
+    --ivory:#f3e9dc;
+    --muted:#c3b3c2;
+    --gold:#c9a15c;
+    --gold-soft:#e4c98a;
+    --rose:#b3596a;
+    --line:rgba(243,233,220,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, #3a2740 0%, transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, #2f2438 0%, transparent 55%),
+      var(--bg-0);
+    color:var(--ivory);
+    font-family:'Work Sans', sans-serif;
+    font-weight:300;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:'Cormorant Garamond', serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  /* HERO */
+  .hero{padding:96px 0 72px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;}
+  .hero .kicker{
+    color:var(--gold-soft);
+    font-size:15px;
+    letter-spacing:0.02em;
+    margin:0 0 18px;
+  }
+  .hero h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:clamp(38px, 5vw, 58px);
+    line-height:1.12;
+    margin:0 0 22px;
+    max-width:15ch;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--gold-soft);
+  }
+  .hero p.lede{
+    font-size:18px;
+    color:var(--muted);
+    max-width:44ch;
+    margin:0 0 34px;
+  }
+  .cta-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+  .btn-gold{
+    background:linear-gradient(135deg, var(--gold-soft), var(--gold));
+    color:#241a2c;
+    border:none;
+    padding:15px 30px;
+    border-radius:2px;
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    letter-spacing:0.01em;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(201,161,92,0.25);}
+  .btn-ghost{
+    color:var(--ivory);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:2px;
+    font-size:15px;
+  }
+
+  /* floating hearts in hero */
+  .hero-visual{position:relative;height:360px;}
+  .hero-frame{
+    position:absolute;inset:0;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:linear-gradient(160deg, var(--bg-2), var(--bg-1));
+    overflow:hidden;
+  }
+  .hero-frame .msg{
+    position:absolute;
+    background:rgba(243,233,220,0.06);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 16px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .hero-frame .msg.one{top:34px;left:24px;}
+  .hero-frame .msg.two{top:88px;right:28px;background:rgba(201,161,92,0.10);border-color:rgba(201,161,92,0.3);color:var(--gold-soft);}
+  .hero-frame .center-word{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:40px;
+    color:var(--gold-soft);
+    opacity:0;
+    animation:reveal 5s ease-in-out infinite;
+    text-align:center;
+    padding:0 20px;
+  }
+  @keyframes reveal{
+    0%{opacity:0;transform:scale(0.94);}
+    15%{opacity:1;transform:scale(1);}
+    70%{opacity:1;}
+    85%{opacity:0;}
+    100%{opacity:0;}
+  }
+  .petal{
+    position:absolute;
+    bottom:-20px;
+    width:8px;height:8px;
+    border-radius:50% 0 50% 50%;
+    background:var(--rose);
+    opacity:0.5;
+    animation:float 7s linear infinite;
+  }
+  @keyframes float{
+    to{transform:translateY(-380px) rotate(200deg);opacity:0;}
+  }
+
+  /* HOW IT WORKS */
+  .how{padding:60px 0;border-top:1px solid var(--line);}
+  .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;margin-top:32px;}
+  .how h2{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:32px;
+    margin:0;
+  }
+  .step{border-left:1px solid var(--line);padding-left:20px;}
+  .step .n{font-family:'Cormorant Garamond', serif;font-style:italic;color:var(--gold-soft);font-size:22px;display:block;margin-bottom:8px;}
+  .step p{color:var(--muted);font-size:15px;margin:0;}
+
+  /* DEMO */
+  .demo{padding:70px 0 100px;border-top:1px solid var(--line);}
+  .demo-head{max-width:56ch;margin-bottom:44px;}
+  .demo-head h2{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:34px;
+    margin:0 0 12px;
+  }
+  .demo-head p{color:var(--muted);margin:0;font-size:16px;}
+
+  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+
+  .field-label{font-size:13px;color:var(--muted);margin:0 0 10px;}
+  .pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;}
+  .pill{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:9px 18px;
+    border-radius:20px;
+    font-family:'Work Sans', sans-serif;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .pill.active{
+    border-color:var(--gold);
+    color:var(--gold-soft);
+    background:rgba(201,161,92,0.10);
+  }
+  input#nameInput{
+    width:100%;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--line);
+    color:var(--ivory);
+    font-family:'Cormorant Garamond', serif;
+    font-size:26px;
+    padding:8px 2px 12px;
+    margin-bottom:30px;
+    outline:none;
+    transition:border-color .2s ease;
+  }
+  input#nameInput:focus{border-color:var(--gold);}
+  input#nameInput::placeholder{color:rgba(195,179,194,0.5);font-style:italic;}
+
+  /* phone */
+  .phone-shell{
+    background:linear-gradient(165deg, #2a1f32, #1e1626);
+    border:1px solid var(--line);
+    border-radius:28px;
+    padding:14px;
+    width:280px;
+    margin:0 auto;
+    box-shadow:0 30px 60px rgba(0,0,0,0.4);
+  }
+  .phone-notch{width:70px;height:5px;background:rgba(243,233,220,0.15);border-radius:3px;margin:0 auto 10px;}
+  .phone-screen{
+    background:linear-gradient(180deg, #241a2c, #1c1420);
+    border-radius:16px;
+    height:420px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+  .phone-header{
+    display:flex;align-items:center;gap:10px;
+    padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:14px;
+    font-size:14px;color:var(--muted);
+  }
+  .phone-header .dot{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--gold));flex-shrink:0;}
+  .bubble-in{
+    align-self:flex-start;
+    background:rgba(243,233,220,0.06);
+    border:1px solid var(--line);
+    border-radius:12px 12px 12px 3px;
+    padding:9px 13px;
+    font-size:13px;
+    color:var(--muted);
+    max-width:75%;
+    margin-bottom:12px;
+  }
+  .stage{
+    flex:1;
+    border-radius:12px;
+    background:radial-gradient(ellipse at center, rgba(201,161,92,0.08), transparent 70%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stage .placeholder{color:rgba(195,179,194,0.55);font-size:13px;}
+  .stage .reveal-text{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:var(--gold-soft);
+    font-size:22px;
+    line-height:1.4;
+    opacity:0;
+  }
+  .stage.playing .reveal-text{
+    animation:stageReveal 1.1s ease forwards;
+  }
+  @keyframes stageReveal{
+    0%{opacity:0;transform:translateY(8px) scale(0.97);}
+    100%{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .spark{
+    position:absolute;
+    width:4px;height:4px;
+    background:var(--gold-soft);
+    border-radius:50%;
+    opacity:0;
+  }
+  .stage.playing .spark{
+    animation:sparkUp 1.8s ease-out forwards;
+  }
+  @keyframes sparkUp{
+    0%{opacity:0;transform:translateY(0);}
+    30%{opacity:0.9;}
+    100%{opacity:0;transform:translateY(-70px);}
+  }
+  .gen-btn{
+    margin-top:22px;
+    width:100%;
+  }
+  .fineprint{font-size:12.5px;color:rgba(195,179,194,0.6);margin-top:16px;text-align:center;}
+
+  footer{
+    padding:36px 0 60px;
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;
+    color:var(--muted);
+    font-size:13.5px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  footer .brand{color:var(--gold-soft);font-family:'Cormorant Garamond', serif;font-style:italic;font-size:17px;}
+
+  @media (max-width:840px){
+    .hero{grid-template-columns:1fr;padding-top:60px;}
+    .hero-visual{height:260px;order:-1;}
+    .how-grid{grid-template-columns:1fr;gap:26px;}
+    .demo-grid{grid-template-columns:1fr;gap:40px;}
+    .wrap{padding:0 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div>
+      <p class="kicker serif" style="font-style:italic;">Animaciones a medida, por WhatsApp</p>
+      <h1>Palabras que <em>se mueven</em>, para que lleguen distinto</h1>
+      <p class="lede">Cada animación se crea a mano para una persona y un momento: una declaración, un cumpleaños, una invitación. Tú eliges para quién es y qué quieres decir — nosotros la convertimos en algo que se ve, se siente y se guarda.</p>
+      <div class="cta-row">
+        <button class="btn-gold" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Probar una vista previa</button>
+        <a href="#how" class="btn-ghost">Cómo funciona</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-frame">
+        <div class="msg one">recién nos escribió</div>
+        <div class="msg two">esto es hermoso 🥺</div>
+        <div class="center-word">para ti</div>
+        <div class="petal" style="left:20%;animation-delay:0s;"></div>
+        <div class="petal" style="left:45%;animation-delay:2s;"></div>
+        <div class="petal" style="left:70%;animation-delay:4s;"></div>
+        <div class="petal" style="left:85%;animation-delay:1s;"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <h2>Tres pasos, y ya está en camino</h2>
+    <div class="how-grid">
+      <div class="step">
+        <span class="n">Uno</span>
+        <p>Eliges la ocasión y nos cuentas para quién es: nombre, algo que quieras que aparezca, y si tienes una foto que quieras incluir.</p>
+      </div>
+      <div class="step">
+        <span class="n">Dos</span>
+        <p>Creamos la animación a mano, pensada para esa persona — no una plantilla genérica con el nombre pegado encima.</p>
+      </div>
+      <div class="step">
+        <span class="n">Tres</span>
+        <p>La recibes lista para enviar por WhatsApp, al número que tú decidas, cuando tú decidas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo" id="demo">
+    <div class="demo-head">
+      <h2>Arma tu vista previa</h2>
+      <p>Elige la ocasión y escribe el nombre de quien la va a recibir. Así se vería llegando al chat.</p>
+    </div>
+
+    <div class="demo-grid">
+      <div>
+        <p class="field-label">Ocasión</p>
+        <div class="pills" id="occasionPills">
+          <button class="pill active" data-occ="amor">Declaración de amor</button>
+          <button class="pill" data-occ="cumple">Cumpleaños</button>
+          <button class="pill" data-occ="invitacion">Invitación</button>
+          <button class="pill" data-occ="negocio">Anuncio de negocio</button>
+        </div>
+
+        <p class="field-label">¿Para quién es?</p>
+        <input type="text" id="nameInput" placeholder="Escribe el nombre..." maxlength="24">
+
+        <button class="btn-gold gen-btn" onclick="playPreview()">Generar vista previa</button>
+        <p class="fineprint">Esto es una simulación del resultado final — la animación real se hace a mano para tu pedido.</p>
+      </div>
+
+      <div>
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="dot"></div>
+              <span id="chatLabel">Vista previa</span>
+            </div>
+            <div class="bubble-in" id="bubbleIn">Toca "Generar vista previa" para ver cómo llega</div>
+            <div class="stage" id="stage">
+              <span class="placeholder" id="stagePlaceholder">Tu animación aparecerá aquí</span>
+              <span class="reveal-text" id="revealText"></span>
+              <span class="spark" style="left:30%;top:60%;"></span>
+              <span class="spark" style="left:55%;top:65%;animation-delay:0.2s;"></span>
+              <span class="spark" style="left:70%;top:55%;animation-delay:0.4s;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="brand">para ti</span>
+    <span>Cada pieza se hace a mano — dinos la ocasión y el resto lo pensamos nosotros.</span>
+  </footer>
+
+</div>
+
+<script>
+  const messages = {
+    amor: (n) => `Para ${n || "ti"},<br>esto que siento no cabe<br>en un mensaje de texto.`,
+    cumple: (n) => `Feliz cumpleaños,<br>${n || "querido/a"}.<br>Que este año te alcance.`,
+    invitacion: (n) => `${n || "Tú"} estás invitado/a<br>a algo que queremos<br>celebrar contigo.`,
+    negocio: (n) => `${n || "Tu negocio"}<br>merece un anuncio<br>que la gente recuerde.`
+  };
+
+  const labels = {
+    amor: "Declaración de amor",
+    cumple: "Cumpleaños",
+    invitacion: "Invitación",
+    negocio: "Anuncio de negocio"
+  };
+
+  let currentOcc = "amor";
+
+  document.querySelectorAll('#occasionPills .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#occasionPills .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentOcc = btn.dataset.occ;
+    });
+  });
+
+  function playPreview(){
+    const name = document.getElementById('nameInput').value.trim();
+    const stage = document.getElementById('stage');
+    const reveal = document.getElementById('revealText');
+    const placeholder = document.getElementById('stagePlaceholder');
+    const bubble = document.getElementById('bubbleIn');
+    const chatLabel = document.getElementById('chatLabel');
+
+    placeholder.style.display = 'none';
+    chatLabel.textContent = labels[currentOcc];
+    bubble.textContent = name ? `Animación lista para ${name}` : 'Animación lista para enviar';
+
+    stage.classList.remove('playing');
+    reveal.style.opacity = 0;
+    void stage.offsetWidth; // reinicia la animación
+
+    reveal.innerHTML = messages[currentOcc](name);
+    stage.classList.add('playing');
+  }
+</script>
+
+</body>
+</html>

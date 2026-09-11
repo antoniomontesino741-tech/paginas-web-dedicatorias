@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Flor Amarilla para Dedicar</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width:100vw; height:100vh;
+    background:#000;
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Poppins',sans-serif;
+  }
+  .stage {
+    position:relative;
+    width:420px; height:100vh;
+    background:radial-gradient(ellipse at 50% 25%, #1a1035 0%, #05040f 75%);
+    overflow:hidden;
+  }
+
+  /* estrellitas */
+  .estrella {
+    position:absolute; width:2px; height:2px; background:#fff;
+    border-radius:50%; opacity:.6;
+    animation: titila 2.5s ease-in-out infinite;
+  }
+  @keyframes titila { 0%,100%{opacity:.15;} 50%{opacity:1;} }
+
+  /* titulo neon estilo letras */
+  .titulo {
+    position:absolute; top:55px; left:50%;
+    transform:translateX(-50%);
+    color:#fff44f; font-family:'Dancing Script',cursive;
+    font-size:40px; font-weight:700;
+    text-shadow:0 0 6px #fff9c4, 0 0 16px #ffe066, 0 0 34px #ffca28;
+    opacity:0; white-space:nowrap; z-index:9;
+    animation: fadeInOut 5s ease-in-out .3s forwards;
+  }
+  @keyframes fadeInOut {
+    0%{opacity:0; transform:translate(-50%,-10px);}
+    12%{opacity:1; transform:translate(-50%,0);}
+    88%{opacity:1;}
+    100%{opacity:0; transform:translate(-50%,-10px);}
+  }
+
+  .myLove {
+    position:absolute; top:175px; left:16px;
+    color:#fff44f; font-family:'Dancing Script',cursive;
+    font-size:26px; font-weight:700;
+    text-shadow:0 0 6px #fff9c4, 0 0 14px #ffe066;
+    opacity:0; z-index:9;
+    animation: fadeInOut 6s ease-in-out 1.8s forwards;
+  }
+  .siempreTu {
+    position:absolute; top:205px; right:20px;
+    color:#fff44f; font-family:'Dancing Script',cursive;
+    font-size:26px; font-weight:700;
+    text-shadow:0 0 6px #fff9c4, 0 0 14px #ffe066;
+    opacity:0; z-index:9;
+    animation: fadeInOut 6s ease-in-out 2.3s forwards;
+  }
+
+  /* tallo */
+  .tallo {
+    position:absolute; bottom:130px; left:50%;
+    width:12px; height:0;
+    background:linear-gradient(180deg,#6fbf4a,#2f6b25);
+    transform:translateX(-50%);
+    animation: creceTallo 1.2s ease-out .6s forwards;
+    z-index:2; border-radius:6px;
+    box-shadow: 0 0 14px rgba(90,200,60,.5);
+  }
+  @keyframes creceTallo { to { height:220px; } }
+
+  .hoja {
+    position:absolute; bottom:200px; width:44px; height:26px;
+    background:linear-gradient(135deg,#7ed957,#2f6b25);
+    border-radius:0 100% 0 100%;
+    opacity:0; z-index:2;
+    box-shadow:0 0 10px rgba(90,200,60,.4);
+  }
+  .hoja.izq { left:calc(50% - 48px); animation: sacaHojaIzq .9s ease-out 1.4s forwards; }
+  .hoja.der { left:calc(50% + 8px); animation: sacaHojaDer .9s ease-out 1.6s forwards; }
+  @keyframes sacaHojaIzq { from{opacity:0; transform:rotate(20deg) scale(0);} to{opacity:1; transform:rotate(20deg) scale(1);} }
+  @keyframes sacaHojaDer { from{opacity:0; transform:rotate(-20deg) scaleX(-1) scale(0);} to{opacity:1; transform:rotate(-20deg) scaleX(-1) scale(1);} }
+
+  /* FLOR realista por capas */
+  .flor-wrap {
+    position:absolute; bottom:300px; left:50%;
+    transform:translateX(-50%);
+    width:240px; height:240px;
+    z-index:3;
+    animation: mueveFlor 3.6s ease-in-out 4.5s infinite;
+  }
+  @keyframes mueveFlor {
+    0%,100% { transform:translateX(-50%) rotate(-3deg) translateY(0); }
+    50%     { transform:translateX(-50%) rotate(3deg) translateY(-6px); }
+  }
+  .flor { position:relative; width:100%; height:100%; filter: drop-shadow(0 0 30px rgba(255,180,0,.55)); }
+
+  .capullo {
+    position:absolute; top:50%; left:50%;
+    width:34px; height:50px;
+    background:radial-gradient(circle at 38% 28%, #ffef9e, #ffb300 70%, #e67a00 100%);
+    border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+    transform:translate(-50%,-50%) scale(1);
+    animation: cierraCapullo 1.8s ease-in-out .9s forwards;
+    z-index:9;
+  }
+  @keyframes cierraCapullo {
+    0% { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+    100% { opacity:0; transform:translate(-50%,-50%) scale(0.25) rotate(30deg); }
+  }
+
+  .petalo {
+    position:absolute; top:50%; left:50%;
+    width:0; height:0;
+    opacity:0;
+    transform-origin: 50% 100%;
+    animation: abrePetalo 1.3s cubic-bezier(.25,1.6,.4,1) forwards;
+  }
+  .petalo .forma {
+    position:absolute; left:50%; bottom:0;
+    width:var(--w); height:var(--h);
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at 35% 25%, #fff6c8 0%, #ffd23f 45%, #ff9800 80%, #e06d00 100%);
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    box-shadow: inset -4px -6px 10px rgba(180,80,0,.35);
+  }
+  @keyframes abrePetalo {
+    0%   { opacity:0; transform: translate(-50%,-50%) rotate(var(--rot0)) scale(0.15); }
+    100% { opacity:1; transform: translate(-50%,-50%) rotate(var(--rot)) scale(1) translateY(var(--out)); }
+  }
+  /* anillo exterior: 6 petalos grandes */
+  .po1{ --rot0:0deg;   --rot:0deg;   --out:2px;  --w:64px; --h:96px; animation-delay:2.3s; }
+  .po2{ --rot0:60deg;  --rot:60deg;  --out:2px;  --w:64px; --h:96px; animation-delay:2.45s; }
+  .po3{ --rot0:120deg; --rot:120deg; --out:2px;  --w:64px; --h:96px; animation-delay:2.6s; }
+  .po4{ --rot0:180deg; --rot:180deg; --out:2px;  --w:64px; --h:96px; animation-delay:2.75s; }
+  .po5{ --rot0:240deg; --rot:240deg; --out:2px;  --w:64px; --h:96px; animation-delay:2.9s; }
+  .po6{ --rot0:300deg; --rot:300deg; --out:2px;  --w:64px; --h:96px; animation-delay:3.05s; }
+  /* anillo interior: 5 petalos medianos, mas cerrados */
+  .pi1{ --rot0:20deg;  --rot:20deg;  --out:16px; --w:44px; --h:70px; animation-delay:3.3s; }
+  .pi2{ --rot0:92deg;  --rot:92deg;  --out:16px; --w:44px; --h:70px; animation-delay:3.45s; }
+  .pi3{ --rot0:164deg; --rot:164deg; --out:16px; --w:44px; --h:70px; animation-delay:3.6s; }
+  .pi4{ --rot0:236deg; --rot:236deg; --out:16px; --w:44px; --h:70px; animation-delay:3.75s; }
+  .pi5{ --rot0:308deg; --rot:308deg; --out:16px; --w:44px; --h:70px; animation-delay:3.9s; }
+
+  .centro {
+    position:absolute; top:50%; left:50%;
+    width:30px; height:30px; border-radius:50%;
+    background:radial-gradient(circle,#fffbe0,#ffd23f 60%,#ff9800 100%);
+    box-shadow:0 0 22px #ffde59;
+    transform:translate(-50%,-50%) scale(0);
+    animation: apareceCentro .7s ease-out 4.1s forwards;
+    z-index:10;
+  }
+  @keyframes apareceCentro { to { transform:translate(-50%,-50%) scale(1); } }
+
+  /* palabras animadas */
+  .palabras { position:absolute; top:0; left:0; width:100%; height:100%; z-index:8; pointer-events:none; }
+  .palabra {
+    position:absolute; left:50%;
+    color:#fff2c2; font-family:'Dancing Script',cursive;
+    font-size:34px; font-weight:700;
+    text-shadow:0 0 8px #ffd23f, 0 0 20px #ff9d00;
+    opacity:0; white-space:nowrap;
+    transform:translate(-50%,10px) scale(.7);
+    animation: salePalabra 2.6s ease-out forwards;
+  }
+  @keyframes salePalabra {
+    0%   { opacity:0; transform:translate(-50%,20px) scale(.6); }
+    20%  { opacity:1; transform:translate(-50%,0) scale(1.08); }
+    35%  { transform:translate(-50%,0) scale(1); }
+    80%  { opacity:1; }
+    100% { opacity:0; transform:translate(-50%,-25px) scale(1.1); }
+  }
+
+  /* panel de codigo estilo editor, aparece al final */
+  .code-wrap {
+    position:absolute; bottom:40px; left:50%;
+    width:340px;
+    transform:translate(-50%,30px);
+    opacity:0; z-index:12;
+    animation: fadeInOut 6s ease-in-out 16s forwards;
+  }
+  .code-window {
+    background:#0e1420; border-radius:14px;
+    padding:14px 16px; box-shadow:0 10px 30px rgba(0,0,0,.6);
+    border:1px solid rgba(255,255,255,.06);
+  }
+  .dots { display:flex; gap:6px; margin-bottom:10px; }
+  .dot { width:11px; height:11px; border-radius:50%; }
+  .dot.red{background:#ff5f57;} .dot.yellow{background:#ffbd2e;} .dot.green{background:#28c840;}
+  .code-window pre {
+    font-family:'Courier New',monospace; font-size:12.5px; line-height:1.55;
+    color:#d4d4d4; white-space:pre-wrap;
+  }
+  .code-window .sel{color:#dcdcaa;}
+  .code-window .prop{color:#9cdcfe;}
+  .code-window .val{color:#ce9178;}
+  .code-window .num{color:#b5cea8;}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <div class="titulo">Flores Amarillas para ti</div>
+  <div class="myLove">My Love</div>
+  <div class="siempreTu">siempre tú</div>
+
+  <div class="tallo"></div>
+  <div class="hoja izq"></div>
+  <div class="hoja der"></div>
+
+  <div class="flor-wrap">
+    <div class="flor">
+      <div class="capullo"></div>
+
+      <div class="petalo po1"><div class="forma"></div></div>
+      <div class="petalo po2"><div class="forma"></div></div>
+      <div class="petalo po3"><div class="forma"></div></div>
+      <div class="petalo po4"><div class="forma"></div></div>
+      <div class="petalo po5"><div class="forma"></div></div>
+      <div class="petalo po6"><div class="forma"></div></div>
+
+      <div class="petalo pi1"><div class="forma"></div></div>
+      <div class="petalo pi2"><div class="forma"></div></div>
+      <div class="petalo pi3"><div class="forma"></div></div>
+      <div class="petalo pi4"><div class="forma"></div></div>
+      <div class="petalo pi5"><div class="forma"></div></div>
+
+      <div class="centro"></div>
+    </div>
+  </div>
+
+  <div class="palabras" id="palabras">
+    <div class="palabra" style="top:120px;" data-delay="5.2">preciosa</div>
+    <div class="palabra" style="top:160px;" data-delay="7.6">hermosa</div>
+    <div class="palabra" style="top:120px;" data-delay="10.0">te quiero</div>
+    <div class="palabra" style="top:160px;" data-delay="12.4">te amo</div>
+    <div class="palabra" style="top:120px;" data-delay="14.8">eres mi luz ✨</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-window">
+      <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+      <pre><span class="sel">.Flores_Amarillas</span> {
+  <span class="prop">position</span>: <span class="val">absolute</span>;
+  <span class="prop">width</span>: <span class="num">90%</span>;
+  <span class="prop">font-family</span>: <span class="val">"Te Amo"</span>;
+  <span class="prop">color</span>: <span class="val">#ffd23f</span>;
+  <span class="prop">text-shadow</span>: <span class="val">0 0 20px #ffb300</span>;
+}</pre>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  for (let i=0;i<45;i++){
+    const s = document.createElement('div');
+    s.className='estrella';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*55+'%';
+    s.style.animationDelay = (Math.random()*2.5)+'s';
+    stage.appendChild(s);
+  }
+  document.querySelectorAll('.palabra').forEach(p=>{
+    p.style.animationDelay = p.getAttribute('data-delay')+'s';
+  });
+</script>
+</body>
+</html>
